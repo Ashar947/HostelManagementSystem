@@ -1,26 +1,58 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from './Sidebar'
 
 function Room() {
+    const [initial, setfinal] = useState({
+        RoomAvailable: [], RoomEmpty: []
+    });
+    const callRoom = async () => {
+        try {
+            console.log("in try");
+            const res = await fetch("/room", {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            });
+            if (res.status === 201) {
+                const data = await res.json();
+                console.log(`${res.status} STATUS`);
+                console.log(data);
+                setfinal(data);
+            } else {
+                window.alert("New Error");
+            }
+        } catch (error) {
+            window.alert("Catch error");
+            console.log("Shoot at error");
+            console.log(error);
+        }
+    };
     const registerData = async (event) => {
-        event.preventDefault() ;
+        event.preventDefault();
         const res = await fetch('/roomCreation', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({roomLimit:4})
-        }).then((response)=>{
-          console.log(response.status);
-          if(response.status===201){
-            window.alert("Room Created");
-            console.log("Room Created");
-          } else{
-            window.alert("new error");
-            console.log("new erro");
-          }
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ roomLimit: 4 })
+        }).then((response) => {
+            console.log(response.status);
+            if (response.status === 201) {
+                window.alert("Room Created");
+                console.log("Room Created");
+            } else {
+                window.alert("new error");
+                console.log("new erro");
+            }
         });
-      };
+
+    };
+    useEffect(() => {
+        callRoom();
+    }, []);
     return (
         <>
             <main className="flex" style={{ borderTop: "1px solid white" }}>
@@ -53,7 +85,7 @@ function Room() {
                                     alt="" srcset="" />
                                 <h2 className="fw-normal">Update / Remove </h2>
                                 <br />
-                                <p><a className="btn btn-primary" href="#">View Status »</a></p>
+                                <p><a className="btn btn-primary" href="/viewRooms">View Status »</a></p>
                             </div>
                         </div>
                     </div>
@@ -65,24 +97,41 @@ function Room() {
                             <thead>
                                 <tr>
                                     <th scope="col">Room No</th>
-                                    <th scope="col">Memembers</th>
+                                    {/* <th scope="col">Memembers</th> */}
                                     <th scope="col">Limit</th>
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>2</td>
-                                    <td>4</td>
-                                    <td>Available for 2</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>3</td>
-                                    <td>4</td>
-                                    <td>Available for 1</td>
-                                </tr>
+                                {initial.RoomAvailable.map((room, index) => {
+                                    return <tr>
+                                        <th scope="row">{room.roomNo}</th>
+                                        <td>{room.roomLimit}</td>
+                                        {/* <td>{(() => {
+                                            let member = 0 ;
+                                            if ((room.member__1) != "none") {
+                                                member = member + 1 ;
+                                            } if ((room.member__2) != "none") {
+                                                member = member + 1 ;
+                                            } if ((room.member__3) != "none") {
+                                                member = member + 1 ;
+                                            } if ((room.member__4) != "none") {
+                                                member = member + 1 ;
+                                            }
+                                            console.log(member)
+                                            return {member};
+                                        })()}</td> */}
+                                        <td>{(() => {
+                                            if ((room.status) === "Empty") {
+                                                return (<a href={`/roomView/${room._id}`}  class="btn btn-danger">{room.status}</a>)
+                                            } else if ((room.status) === "Full") {
+                                                return (<a href={`/roomView/${room._id}`}  class="btn btn-success">{room.status}</a>)
+                                            } else if ((room.status) === "Available") {
+                                                return (<a href={`/roomView/${room._id}`} class="btn btn-warning">{room.status}</a>)
+                                            }
+                                        })()}</td>
+                                    </tr>
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -93,30 +142,47 @@ function Room() {
                             <thead>
                                 <tr>
                                     <th scope="col">Room No</th>
-                                    <th scope="col">Memembers</th>
+                                    {/* <th scope="col">Memembers</th> */}
                                     <th scope="col">Limit</th>
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>0</td>
-                                    <td>4</td>
-                                    <td>Empty</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>0</td>
-                                    <td>4</td>
-                                    <td>Empty</td>
-                                </tr>
+                                {initial.RoomEmpty.map((room, index) => {
+                                    return <tr>
+                                        <th scope="row">{room.roomNo}</th>
+                                        <td>{room.roomLimit}</td>
+                                        {/* <td>{(() => {
+                                            let member = 0 ;
+                                            if ((room.member__1) != "none") {
+                                                member = member + 1 ;
+                                            } if ((room.member__2) != "none") {
+                                                member = member + 1 ;
+                                            } if ((room.member__3) != "none") {
+                                                member = member + 1 ;
+                                            } if ((room.member__4) != "none") {
+                                                member = member + 1 ;
+                                            }
+                                            console.log(member)
+                                            return {member};
+                                        })()}</td> */}
+                                        <td>{(() => {
+                                            if ((room.status) === "Empty") {
+                                                return (<a href={`/roomView/${room._id}`}  class="btn btn-danger">{room.status}</a>)
+                                            } else if ((room.status) === "Full") {
+                                                return (<a href={`/roomView/${room._id}`}  class="btn btn-success">{room.status}</a>)
+                                            } else if ((room.status) === "Available") {
+                                                return (<a href={`/roomView/${room._id}`}  class="btn btn-warning">{room.status}</a>)
+                                            }
+                                        })()}</td>
+                                    </tr>
+                                })}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                </main>
-            
+            </main>
+
             <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content black-bg text-white" style={{ marginTop: "8rem" }}>
@@ -133,7 +199,7 @@ function Room() {
                                 <br />
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <input type="submit" className="btn btn-primary" value="Create Room" onClick={registerData}/>
+                                    <input type="submit" className="btn btn-primary" value="Create Room" onClick={registerData} />
                                 </div>
                             </form>
                         </div>

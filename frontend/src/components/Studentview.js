@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Sidebar from './Sidebar';
 
@@ -7,7 +7,7 @@ function Studentview() {
     let url = window.location.pathname;
     const parts = url.split("/");
     const id = parts.at(-1);
-    const [initial, setfinal] = useState({data:[]});
+    const [initial, setfinal] = useState({ data: [], roomData: [] });
     const callStudent = async () => {
         try {
             console.log("in try");
@@ -64,7 +64,7 @@ function Studentview() {
 
                                                 <div className="col-md-6">
                                                     <label className="small mb-1" for="inputFirstName">First name</label>
-                                                    <input className="form-control" id="inputFirstName" type="text" disbaled value={initial.data.firstName}/>
+                                                    <input className="form-control" id="inputFirstName" type="text" disbaled value={initial.data.firstName} />
                                                 </div>
 
                                                 <div className="col-md-6">
@@ -132,30 +132,30 @@ function Studentview() {
 
                                             <div className="col-md-6">
                                                 <label className="small mb-1" for="inputFirstName">Room No</label>
-                                                <input className="form-control" id="inputFirstName" type="text" />
+                                                <input className="form-control" id="inputFirstName" type="text" disabled value={initial.roomData.roomNo} />
                                             </div>
                                         </div>
 
                                         <div className="row gx-3 mb-3">
                                             <div className="col-md-6">
                                                 <label className="small mb-1" for="inputOrgName">Member 1</label>
-                                                <input className="form-control" id="inputOrgName" type="text" />
+                                                <input className="form-control" id="inputOrgName" type="text" disabled value={initial.roomData.member_1} />
                                             </div>
 
                                             <div className="col-md-6">
                                                 <label className="small mb-1" for="inputLocation">Memeber 2</label>
-                                                <input className="form-control" id="inputLocation" type="text" />
+                                                <input className="form-control" id="inputLocation" type="text" disabled value={initial.roomData.member_2} />
                                             </div>
                                         </div>
                                         <div className="row gx-3 mb-3">
                                             <div className="col-md-6">
                                                 <label className="small mb-1" for="inputOrgName">Memeber 3</label>
-                                                <input className="form-control" id="inputOrgName" type="text" />
+                                                <input className="form-control" id="inputOrgName" type="text" disabled value={initial.roomData.member_3} />
                                             </div>
 
                                             <div className="col-md-6">
                                                 <label className="small mb-1" for="inputLocation">Member 4</label>
-                                                <input className="form-control" id="inputLocation" type="text" />
+                                                <input className="form-control" id="inputLocation" type="text" disabled value={initial.roomData.member_4} />
                                             </div>
                                         </div>
 

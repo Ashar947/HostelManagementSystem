@@ -69,6 +69,7 @@ router.get("/home", async (req, res) => {
     }
 }
 )
+
 router.get("/viewStudents", async (req, res) => {
     console.log("viewStudents")
     try {
@@ -80,6 +81,7 @@ router.get("/viewStudents", async (req, res) => {
     }
 }
 )
+
 router.get("/viewRooms", async (req, res) => {
     console.log("/viewRooms")
     try {
@@ -91,6 +93,7 @@ router.get("/viewRooms", async (req, res) => {
     }
 }
 )
+
 router.get("/roomview/:id", async (req, res) => {
     console.log("Room View by ID")
     const URL_id = req.params.id
@@ -104,11 +107,6 @@ router.get("/roomview/:id", async (req, res) => {
     }
 }
 )
-// const editEmp = await User.updateOne({_id:id},{
-//     $set : {
-//         name,email,phone,work , salary , address
-//     }});
-// body: JSON.stringify({member_1:input.member_1 , member_2:input.member_2 ,  member_3:input.member_3 , member_4:input.member_4 })
 
 router.post("/roomview/:id", async (req, res) => {
     console.log("POST....Room View by ID")
@@ -208,12 +206,6 @@ router.post("/roomview/:id", async (req, res) => {
 }
 )
 
-
-
-
-
-
-
 router.post("/adminregister", async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     console.log(`First Name is ${firstName} ,Last Name is ${lastName} , email ${email} &&&& pasword ${password}`)
@@ -308,18 +300,33 @@ router.post("/roomCreation", async (req, res) => {
     }
 }
 )
+
 router.get("/studentView/:id", async (req, res) => {
     console.log("get student info")
     const uid = req.params.id;
     try {
         const studentData = await Student.findOne({ _id: uid })
-        res.status(201).json({ data: studentData })
+        const roomData = await Room.findOne({roomNo:studentData.room_No})
+        res.status(201).json({ data: studentData , roomData : roomData })
     } catch (error) {
         res.send(error)
         console.log(error)
     }
 }
 )
+router.get("/studentsOut", async (req, res) => {
+    console.log("get student OUT");
+    try {
+        const studentData = await Student.find({status:"Out"})
+        console.log(studentData)
+        res.status(201).json({StudentOut:studentData})
+    } catch (error) {
+        res.send(error)
+        console.log(error)
+    }
+}
+)
+
 router.get("/viewEmployees", async (req, res) => {
     console.log("get employees")
     try {
@@ -332,10 +339,16 @@ router.get("/viewEmployees", async (req, res) => {
 }
 )
 
+router.get("/room" , async(req,res)=>{
+    try{
+        const roomAvailable = await Room.find({status:"Available"})
+        const roomEmpty = await Room.find({status:"Empty"})
+        res.status(201).json({RoomAvailable:roomAvailable,RoomEmpty:roomEmpty})
+    }catch (error){
+        console.log(error)
+    }
 
-
-
-
+})
 
 
 module.exports = router;
